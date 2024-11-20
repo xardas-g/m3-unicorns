@@ -82,25 +82,27 @@ class Dataset:
         df_transformed[COL_DAYOFYEAR] = df_transformed.Date.dt.dayofyear
         df_transformed[COL_MONTH] = df_transformed.Date.dt.month
 
+        df_transformed = df_transformed.drop(COL_DATE, axis=1)
+
         locations_coordinates = [
             {"Ort": "Albury", "Breitengrad": -36.080780, "Längengrad": 146.916473},
-            {"Ort": "Badgerys Creek", "Breitengrad": -33.87972, "Längengrad": 150.75222},
+            {"Ort": "BadgerysCreek", "Breitengrad": -33.87972, "Längengrad": 150.75222},
             {"Ort": "Cobar", "Breitengrad": -31.49972, "Längengrad": 145.83194},
-            {"Ort": "Coffs Harbour", "Breitengrad": -30.30222, "Längengrad": 153.11889},
+            {"Ort": "CoffsHarbour", "Breitengrad": -30.30222, "Längengrad": 153.11889},
             {"Ort": "Moree", "Breitengrad": -29.46583, "Längengrad": 149.83389},
             {"Ort": "Newcastle", "Breitengrad": -32.92953, "Längengrad": 151.7801},
-            {"Ort": "Norah Head", "Breitengrad": -33.28250, "Längengrad": 151.57417},
-            {"Ort": "Norfolk Island", "Breitengrad": -29.0328, "Längengrad": 167.9544},
+            {"Ort": "NorahHead", "Breitengrad": -33.28250, "Längengrad": 151.57417},
+            {"Ort": "NorfolkIsland", "Breitengrad": -29.0328, "Längengrad": 167.9544},
             {"Ort": "Penrith", "Breitengrad": -33.758011, "Längengrad": 150.705444},
             {"Ort": "Richmond", "Breitengrad": -37.541290, "Längengrad": -77.434769},
             {"Ort": "Sydney", "Breitengrad": -33.865143, "Längengrad": 151.209900},
-            {"Ort": "Sydney Airport", "Breitengrad": -33.947346, "Längengrad": 151.179428},
-            {"Ort": "Wagga Wagga", "Breitengrad": -35.12577, "Längengrad": 147.35375},
+            {"Ort": "SydneyAirport", "Breitengrad": -33.947346, "Längengrad": 151.179428},
+            {"Ort": "WaggaWagga", "Breitengrad": -35.12577, "Längengrad": 147.35375},
             {"Ort": "Williamtown", "Breitengrad": -32.81500, "Längengrad": 151.84278},
             {"Ort": "Wollongong", "Breitengrad": -34.424, "Längengrad": 150.89345},
             {"Ort": "Canberra", "Breitengrad": -35.282001, "Längengrad": 149.128998},
             {"Ort": "Tuggeranong", "Breitengrad": -35.4244, "Längengrad": 149.0888},
-            {"Ort": "Mount Ginini", "Breitengrad": -35.5333, "Längengrad": 148.7833},
+            {"Ort": "MountGinini", "Breitengrad": -35.5333, "Längengrad": 148.7833},
             {"Ort": "Ballarat", "Breitengrad": -37.56622, "Längengrad": 143.84957},
             {"Ort": "Bendigo", "Breitengrad": -36.75818, "Längengrad": 144.28024},
             {"Ort": "Sale", "Breitengrad": -38.1069, "Längengrad": 147.0637},
@@ -144,6 +146,8 @@ class Dataset:
 
         # Entferne unnötige Spalten
         df_transformed = df_transformed.drop(columns=['Ort', 'Breitengrad', 'Längengrad'])
+
+        # df_transformed = df_transformed.dropna()
 
         return df_transformed
 
