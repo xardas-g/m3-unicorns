@@ -5,6 +5,10 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
+from sensai.data_transformation import DFTSkLearnTransformer
+from sensai.featuregen import FeatureGeneratorTakeColumns
+from sensai.sklearn.sklearn_classification import SkLearnLogisticRegressionVectorClassificationModel, \
+    SkLearnKNeighborsVectorClassificationModel, SkLearnRandomForestVectorClassificationModel, SkLearnDecisionTreeVectorClassificationModel
 
 from .data import *
 
@@ -32,9 +36,15 @@ class ModelFactory:
         return Pipeline([
             ("project_scale", ColumnTransformer([("scaler", StandardScaler(), columnsUsed)])),
             ("model", RandomForestClassifier(n_estimators=100))])
-
+#
+#    @classmethod
+#    def create_decision_tree_orig(cls, columnsUsed):
+#        return Pipeline([
+#            ("project_scale", ColumnTransformer([("scaler", StandardScaler(), columnsUsed)])),
+#            ("model", DecisionTreeClassifier(random_state=42, max_depth=50))])
     @classmethod
     def create_decision_tree_orig(cls, columnsUsed):
-        return Pipeline([
-            ("project_scale", ColumnTransformer([("scaler", StandardScaler(), columnsUsed)])),
-            ("model", DecisionTreeClassifier(random_state=42, max_depth=50))])
+        return SkLearnDecisionTreeVectorClassificationModel(max_depth=2) \
+            .with_feature_generator(FeatureGeneratorTakeColumns(columnsUsed)) \
+            .with_feature_transformers(DFTSkLearnTransformer(StandardScaler())) \
+            .with_name("DecisionTree-orig")
