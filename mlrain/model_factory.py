@@ -12,27 +12,29 @@ class ModelFactory:
     COLS_USED_BY_ORIGINAL_MODELS = [COL_MINTEMP, COL_MAXTEMP, COL_RAINFALL, COL_EVAPORATION, COL_SUNSHINE, COL_WINDGUSTSPEED, COL_WINDSPEED9AM,
      COL_WINDSPEED3PM, COL_HUMIDITY9AM, COL_HUMIDITY3PM, COL_PRESSURE9AM, COL_PRESSURE3PM, COL_CLOUD9AM, COL_CLOUD3PM,
      COL_TEMP9AM, COL_TEMP3PM, COL_RAINTODAY, COL_DAYOFYEAR, COL_MONTH, COL_WINDGUSTDIR, COL_WINDDIR9AM, COL_WINDDIR3PM, COL_LONG, COL_LAT]
+    COLS_REDUCED = [COL_MAXTEMP, COL_RAINFALL, COL_EVAPORATION, COL_SUNSHINE, COL_WINDGUSTSPEED, COL_HUMIDITY9AM, COL_HUMIDITY3PM, COL_PRESSURE9AM, COL_PRESSURE3PM, COL_CLOUD9AM, COL_CLOUD3PM,
+     COL_TEMP3PM, COL_RAINTODAY, COL_DAYOFYEAR, COL_LONG, COL_LAT]
 
     @classmethod
-    def create_logistic_regression_orig(cls):
+    def create_logistic_regression_orig(cls, columnsUsed):
         return Pipeline([
-            ("project_scale", ColumnTransformer([("scaler", StandardScaler(), cls.COLS_USED_BY_ORIGINAL_MODELS)])),
+            ("project_scale", ColumnTransformer([("scaler", StandardScaler(), columnsUsed)])),
             ("model", linear_model.LogisticRegression(solver='lbfgs', max_iter=1000))])
 
     @classmethod
-    def create_knn_orig(cls):
+    def create_knn_orig(cls, columnsUsed):
         return Pipeline([
-            ("project_scale", ColumnTransformer([("scaler", StandardScaler(), cls.COLS_USED_BY_ORIGINAL_MODELS)])),
-            ("model", KNeighborsClassifier(n_neighbors=1))])
+            ("project_scale", ColumnTransformer([("scaler", StandardScaler(), columnsUsed)])),
+            ("model", KNeighborsClassifier(n_neighbors=20))])
 
     @classmethod
-    def create_random_forest_orig(cls):
+    def create_random_forest_orig(cls, columnsUsed):
         return Pipeline([
-            ("project_scale", ColumnTransformer([("scaler", StandardScaler(), cls.COLS_USED_BY_ORIGINAL_MODELS)])),
+            ("project_scale", ColumnTransformer([("scaler", StandardScaler(), columnsUsed)])),
             ("model", RandomForestClassifier(n_estimators=100))])
 
     @classmethod
-    def create_decision_tree_orig(cls):
+    def create_decision_tree_orig(cls, columnsUsed):
         return Pipeline([
-            ("project_scale", ColumnTransformer([("scaler", StandardScaler(), cls.COLS_USED_BY_ORIGINAL_MODELS)])),
-            ("model", DecisionTreeClassifier(random_state=42, max_depth=2))])
+            ("project_scale", ColumnTransformer([("scaler", StandardScaler(), columnsUsed)])),
+            ("model", DecisionTreeClassifier(random_state=42, max_depth=50))])

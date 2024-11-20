@@ -16,10 +16,14 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_
 #print(classification_report(y_test, y_pred))
 
 models = [
-    ModelFactory.create_logistic_regression_orig(),
-    ModelFactory.create_knn_orig(),
-    ModelFactory.create_random_forest_orig(),
-    ModelFactory.create_decision_tree_orig(),
+    ModelFactory.create_logistic_regression_orig(ModelFactory.COLS_REDUCED),
+    ModelFactory.create_logistic_regression_orig(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),
+    ModelFactory.create_knn_orig(ModelFactory.COLS_REDUCED),
+    ModelFactory.create_knn_orig(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),
+    ModelFactory.create_random_forest_orig(ModelFactory.COLS_REDUCED),
+    ModelFactory.create_random_forest_orig(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),
+    ModelFactory.create_decision_tree_orig(ModelFactory.COLS_REDUCED),
+    ModelFactory.create_decision_tree_orig(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),
 ]
 
     # evaluate models
