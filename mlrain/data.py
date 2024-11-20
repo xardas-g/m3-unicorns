@@ -32,9 +32,6 @@ COL_LONG = "Longitude"
 COL_LAT = "Latitude"
 
 class Dataset:
-    COLUMS = [COL_MINTEMP, COL_MAXTEMP, COL_RAINFALL, COL_EVAPORATION, COL_SUNSHINE, COL_WINDGUSTSPEED, COL_WINDSPEED9AM,
-     COL_WINDSPEED3PM, COL_HUMIDITY9AM, COL_HUMIDITY3PM, COL_PRESSURE9AM, COL_PRESSURE3PM, COL_CLOUD9AM, COL_CLOUD3PM,
-     COL_TEMP9AM, COL_TEMP3PM, COL_RAINTODAY, COL_DAYOFYEAR, COL_MONTH, COL_WINDGUSTDIR, COL_WINDDIR9AM, COL_WINDDIR3PM, COL_LONG, COL_LAT]
 
 
     def __init__(self, num_samples: Optional[int] = None, random_seed: int = 42):
@@ -147,9 +144,6 @@ class Dataset:
 
         # Entferne unnötige Spalten
         df_transformed = df_transformed.drop(columns=['Ort', 'Breitengrad', 'Längengrad'])
-
-
-
 
         return df_transformed
 
