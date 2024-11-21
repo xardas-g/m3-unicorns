@@ -1,3 +1,4 @@
+from sensai.xgboost import XGBGradientBoostedVectorClassificationModel
 from sklearn import linear_model
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
@@ -5,7 +6,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
-from sensai.data_transformation import DFTSkLearnTransformer
+from sensai.data_transformation import DFTSkLearnTransformer, DFTOneHotEncoder
 from sensai.featuregen import FeatureGeneratorTakeColumns
 from sensai.sklearn.sklearn_classification import SkLearnLogisticRegressionVectorClassificationModel, \
     SkLearnKNeighborsVectorClassificationModel, SkLearnRandomForestVectorClassificationModel, SkLearnDecisionTreeVectorClassificationModel
@@ -48,25 +49,35 @@ class ModelFactory:
         return SkLearnDecisionTreeVectorClassificationModel(max_depth=40) \
             .with_feature_generator(FeatureGeneratorTakeColumns(columnsUsed)) \
             .with_feature_transformers(DFTSkLearnTransformer(StandardScaler())) \
-            .with_name("DecisionTree-orig")
+            .with_name("DecisionTree-Deep-40")
     
     @classmethod
     def create_logistic_regression_orig(cls, columnsUsed):
         return SkLearnLogisticRegressionVectorClassificationModel(solver='lbfgs', max_iter=1000) \
             .with_feature_generator(FeatureGeneratorTakeColumns(columnsUsed)) \
             .with_feature_transformers(DFTSkLearnTransformer(StandardScaler())) \
-            .with_name("LogisticRegression-orig")
+            .with_name("LogisticRegression-lbfgs")
 
     @classmethod
     def create_knn_orig(cls, columnsUsed):
         return SkLearnKNeighborsVectorClassificationModel(n_neighbors=20) \
             .with_feature_generator(FeatureGeneratorTakeColumns(columnsUsed)) \
             .with_feature_transformers(DFTSkLearnTransformer(StandardScaler())) \
-            .with_name("KNeighbors-orig")
+            .with_name("KNeighbors-orig-n=20")
 
     @classmethod
     def create_random_forest_orig(cls, columnsUsed):
         return SkLearnRandomForestVectorClassificationModel(n_estimators=100) \
             .with_feature_generator(FeatureGeneratorTakeColumns(columnsUsed)) \
             .with_feature_transformers(DFTSkLearnTransformer(StandardScaler())) \
-            .with_name("RandomForest-orig")
+            .with_name("RandomForest-orig-est=100")
+
+
+    @classmethod
+    def create_xgb_gradient_with_hotencode_location(cls, columnsUsed):
+        return (XGBGradientBoostedVectorClassificationModel() \
+            .with_feature_generator(FeatureGeneratorTakeColumns([*columnsUsed, COL_LOCATION])) \
+            .with_feature_transformers(DFTSkLearnTransformer(StandardScaler(), columnsUsed))
+            .with_feature_transformers(DFTOneHotEncoder(COL_LOCATION), add=True)\
+            .with_name("XGBGradientBoostedVector-hotencode-location"))
+
