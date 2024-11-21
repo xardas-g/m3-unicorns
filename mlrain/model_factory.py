@@ -6,11 +6,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from sensai.data_transformation import DFTSkLearnTransformer
-from sensai.featuregen import FeatureGeneratorTakeColumns
+from sensai.featuregen import FeatureGeneratorTakeColumns, FeatureCollector
 from sensai.sklearn.sklearn_classification import SkLearnLogisticRegressionVectorClassificationModel, \
     SkLearnKNeighborsVectorClassificationModel, SkLearnRandomForestVectorClassificationModel, SkLearnDecisionTreeVectorClassificationModel
 
 from .data import *
+from .features import FeatureName, registry
 
 class ModelFactory:
     COLS_USED_BY_ORIGINAL_MODELS = [COL_MINTEMP, COL_MAXTEMP, COL_RAINFALL, COL_EVAPORATION, COL_SUNSHINE, COL_WINDGUSTSPEED, COL_WINDSPEED9AM,
@@ -19,6 +20,8 @@ class ModelFactory:
 
     COLS_REDUCED = [COL_MAXTEMP, COL_RAINFALL, COL_EVAPORATION, COL_SUNSHINE, COL_WINDGUSTSPEED, COL_HUMIDITY9AM, COL_HUMIDITY3PM, COL_PRESSURE9AM, COL_PRESSURE3PM, COL_CLOUD9AM, COL_CLOUD3PM,
      COL_TEMP3PM, COL_RAINTODAY, COL_DAYOFYEAR, COL_LONG, COL_LAT]
+    
+    DEFAULT_FEATURES = (FeatureName.LOCATION_PARAMS, FeatureName.SUNSHINE_HOURS)
 
 #    @classmethod
 #    def create_logistic_regression_orig(cls, columnsUsed):
@@ -56,6 +59,15 @@ class ModelFactory:
             .with_feature_generator(FeatureGeneratorTakeColumns(columnsUsed)) \
             .with_feature_transformers(DFTSkLearnTransformer(StandardScaler())) \
             .with_name("LogisticRegression-orig")
+
+    @classmethod
+    def create_logistic_regression(cls):
+        fc = FeatureCollector(*cls.DEFAULT_FEATURES, registry=registry)
+        return SkLearnLogisticRegressionVectorClassificationModel(solver='lbfgs', max_iter=1000) \
+            .with_feature_collector(fc) \
+            .with_feature_transformers(fc.create_feature_transformer_one_hot_encoder(),
+                fc.create_feature_transformer_normalisation()) \
+            .with_name("LogisticRegression")
 
     @classmethod
     def create_knn_orig(cls, columnsUsed):

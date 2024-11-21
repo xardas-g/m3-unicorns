@@ -21,6 +21,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_
 
 models = [
     ModelFactory.create_logistic_regression_orig(ModelFactory.COLS_REDUCED),
+    ModelFactory.create_logistic_regression(),
     ModelFactory.create_logistic_regression_orig(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),
     ModelFactory.create_knn_orig(ModelFactory.COLS_REDUCED),
     ModelFactory.create_knn_orig(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),

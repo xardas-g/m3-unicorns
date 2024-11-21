@@ -36,6 +36,7 @@ COL_DATE = "Date"
 COL_LOCATION = "Location"
 COL_LONG = "Longitude"
 COL_LAT = "Latitude"
+COLS_FULL_LOCATION = [COL_LOCATION, COL_LAT, COL_LONG]
 
 logger = init_logger(__name__)
 
@@ -163,7 +164,7 @@ class Dataset:
 
         # Entferne unnötige Spalten
         logger.info(f"Drop columns: {COL_LOCATION}")
-        df_transformed = df_transformed.drop(columns=['Ort', 'Breitengrad', 'Längengrad',COL_LOCATION], axis=1)
+        df_transformed = df_transformed.drop(columns=['Ort', 'Breitengrad', 'Längengrad'], axis=1)#,COL_LOCATION], axis=1)
 
         logger.info(f"Data frame transformation done")
         return df_transformed
