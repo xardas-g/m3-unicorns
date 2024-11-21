@@ -1,7 +1,12 @@
 from typing import Tuple, Optional
 import os
 
+import numpy as np
 import pandas as pd
+from scipy import stats
+
+from .config import DATA_PATH
+from .logger import init_logger
 
 COL_MINTEMP = "MinTemp"
 COL_MAXTEMP = "MaxTemp"
@@ -26,10 +31,13 @@ COL_RAINTODAY = "RainToday"
 COL_RAINTOMORROW = "RainTomorrow"
 COL_DAYOFYEAR = "DayOfYear"
 COL_MONTH = "Month"
+COL_YEAR = "Year"
 COL_DATE = "Date"
 COL_LOCATION = "Location"
 COL_LONG = "Longitude"
 COL_LAT = "Latitude"
+
+logger = init_logger(__name__)
 
 class Dataset:
 
@@ -41,23 +49,28 @@ class Dataset:
         """
         self.num_samples = num_samples
         self.random_seed = random_seed
-        self.df_origin = pd.read_csv(os.path.join(os.getcwd(), "data", "weatherAUS.csv")).dropna()
+        logger.info(f"Load data from {os.path.join(os.getcwd(), DATA_PATH)}")
+
+        self.df_origin = pd.read_csv(os.path.join(os.getcwd(), DATA_PATH)).dropna()
 
 
-    def load_data_frame(self) -> pd.DataFrame:
+    def get_data_frame(self) -> pd.DataFrame:
         """
         :return: the full data frame for this dataset (including the class column)
         """
         df = self.df_origin
         if self.num_samples is not None:
             df = self.df_origin.sample(self.num_samples, random_state=self.random_seed)
-        #df[COL_GEN_POPULARITY_CLASS] = df[COL_POPULARITY].apply(lambda x: CLASS_POPULAR if x >= self.threshold_popular else CLASS_UNPOPULAR)
         return df
 
-    def transform_data(self, df: pd.DataFrame) -> pd.DataFrame:
+    def transform_data_frame(self, df = None) -> pd.DataFrame:
         ##%%
-        df_transformed = df.copy(deep=True)
+        logger.info(f"Start transformation on dataset:")
+        logger.debug("Create deep copy of origin dataframe")
 
+        df_transformed = df.copy(deep=True) if df is not None else self.df_origin.copy(deep=True)
+
+        logger.info(f"Transform wind directions to numeric feature")
         directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW",
                       "NNW"]
 
@@ -78,12 +91,16 @@ class Dataset:
         df_transformed[COL_RAINTOMORROW] = df_transformed[COL_RAINTOMORROW].replace(to_replace=['No', 'Yes'], value=[0, 1])
         df_transformed[COL_RAINTODAY] = df_transformed[COL_RAINTODAY].replace(to_replace=['No', 'Yes'], value=[0, 1])
 
+        logger.info(f"Transform date into multiple columns: {COL_DAYOFYEAR}, {COL_MONTH}, {COL_YEAR}")
         df_transformed[COL_DATE] = pd.to_datetime(df_transformed[COL_DATE])
         df_transformed[COL_DAYOFYEAR] = df_transformed.Date.dt.dayofyear
         df_transformed[COL_MONTH] = df_transformed.Date.dt.month
+        df_transformed[COL_YEAR] = df_transformed.Date.dt.year
 
+        logger.info(f"Drop columns: {COL_DATE}")
         df_transformed = df_transformed.drop(COL_DATE, axis=1)
 
+        logger.info(f"Transform locations into coordinate columns: {COL_LAT}, {COL_LONG}")
         locations_coordinates = [
             {"Ort": "Albury", "Breitengrad": -36.080780, "Längengrad": 146.916473},
             {"Ort": "BadgerysCreek", "Breitengrad": -33.87972, "Längengrad": 150.75222},
@@ -145,16 +162,16 @@ class Dataset:
         df_transformed[COL_LONG] = df_transformed['Längengrad']
 
         # Entferne unnötige Spalten
-        df_transformed = df_transformed.drop(columns=['Ort', 'Breitengrad', 'Längengrad'])
+        logger.info(f"Drop columns: {COL_LOCATION}")
+        df_transformed = df_transformed.drop(columns=['Ort', 'Breitengrad', 'Längengrad',COL_LOCATION], axis=1)
 
-        # df_transformed = df_transformed.dropna()
-
+        logger.info(f"Data frame transformation done")
         return df_transformed
 
     def load_xy(self) -> Tuple[pd.DataFrame, pd.Series]:
         """
         :return: a pair (X, y) where X is the data frame containing all attributes and y is the corresping series of class values
         """
-        df = self.load_data_frame()
-        df_transformed = self.transform_data(df)
+        df = self.get_data_frame()
+        df_transformed = self.transform_data_frame(df)
         return df_transformed.drop(columns=COL_RAINTOMORROW), df_transformed[COL_RAINTOMORROW]
