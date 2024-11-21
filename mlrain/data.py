@@ -38,6 +38,8 @@ COL_LONG = "Longitude"
 COL_LAT = "Latitude"
 COLS_FULL_LOCATION = [COL_LOCATION, COL_LAT, COL_LONG]
 
+COL_GEN_RAINDAYSPERYEAR = "RaindaysPerYear"
+
 logger = init_logger(__name__)
 
 class Dataset:
@@ -91,7 +93,7 @@ class Dataset:
 
         df_transformed[COL_RAINTOMORROW] = df_transformed[COL_RAINTOMORROW].replace(to_replace=['No', 'Yes'], value=[0, 1])
         df_transformed[COL_RAINTODAY] = df_transformed[COL_RAINTODAY].replace(to_replace=['No', 'Yes'], value=[0, 1])
-
+        df_transformed[COL_GEN_RAINDAYSPERYEAR] = df_transformed[COL_RAINTODAY]
         logger.info(f"Transform date into multiple columns: {COL_DAYOFYEAR}, {COL_MONTH}, {COL_YEAR}")
         df_transformed[COL_DATE] = pd.to_datetime(df_transformed[COL_DATE])
         df_transformed[COL_DAYOFYEAR] = df_transformed.Date.dt.dayofyear
