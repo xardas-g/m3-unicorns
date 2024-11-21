@@ -174,4 +174,4 @@ class Dataset:
         """
         df = self.get_data_frame()
         df_transformed = self.transform_data_frame(df)
-        return df_transformed.drop(columns=COL_RAINTOMORROW), df_transformed[COL_RAINTOMORROW]
+        return df_transformed.drop(columns=COL_RAINTOMORROW), df_transformed[[COL_RAINTOMORROW]]
