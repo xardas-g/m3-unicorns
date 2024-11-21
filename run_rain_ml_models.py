@@ -1,8 +1,12 @@
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import train_test_split
 
+from mlrain.eval import evaluate_model
+from mlrain.logger import init_logger
 from mlrain.data import Dataset
 from mlrain.model_factory import ModelFactory
+
+logger = init_logger(__name__)
 
 dset = Dataset()
 
@@ -28,8 +32,7 @@ models = [
 
     # evaluate models
 for model in models:
-    print(f"Evaluating model:\n{model}")
+    logger.info(f"Evaluating model: \n {model}")
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
-    print(confusion_matrix(y_test, y_pred))
-    print(classification_report(y_test, y_pred))
+    evaluate_model(y_pred,y_test)
