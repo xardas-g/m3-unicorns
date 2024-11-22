@@ -36,6 +36,9 @@ COL_DATE = "Date"
 COL_LOCATION = "Location"
 COL_LONG = "Longitude"
 COL_LAT = "Latitude"
+COLS_FULL_LOCATION = [COL_LOCATION, COL_LAT, COL_LONG]
+
+COL_GEN_RAINDAYSPERYEAR = "RaindaysPerYear"
 
 logger = init_logger(__name__)
 
@@ -62,6 +65,7 @@ class Dataset:
         if self.num_samples is not None:
             df = self.df_origin.sample(self.num_samples, random_state=self.random_seed)
         return df
+
 
     def transform_data_frame(self, df = None) -> pd.DataFrame:
         ##%%
@@ -90,7 +94,7 @@ class Dataset:
 
         df_transformed[COL_RAINTOMORROW] = df_transformed[COL_RAINTOMORROW].replace(to_replace=['No', 'Yes'], value=[0, 1])
         df_transformed[COL_RAINTODAY] = df_transformed[COL_RAINTODAY].replace(to_replace=['No', 'Yes'], value=[0, 1])
-
+        df_transformed[COL_GEN_RAINDAYSPERYEAR] = df_transformed[COL_RAINTODAY]
         logger.info(f"Transform date into multiple columns: {COL_DAYOFYEAR}, {COL_MONTH}, {COL_YEAR}")
         df_transformed[COL_DATE] = pd.to_datetime(df_transformed[COL_DATE])
         df_transformed[COL_DAYOFYEAR] = df_transformed.Date.dt.dayofyear
@@ -167,6 +171,7 @@ class Dataset:
 
         logger.info(f"Data frame transformation done")
         return df_transformed
+
 
     def load_xy(self) -> Tuple[pd.DataFrame, pd.Series]:
         """

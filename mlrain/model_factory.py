@@ -77,7 +77,7 @@ class ModelFactory:
 
 
     @classmethod
-    def create_xgb_gradient_with_hotencode_location(cls, columnsUsed):
+    def create_xgb_gradient_with_hotencode_location(cls, columnsUsed:list):
         return (XGBGradientBoostedVectorClassificationModel() \
             .with_feature_generator(FeatureGeneratorTakeColumns([*columnsUsed, COL_LOCATION])) \
             .with_feature_transformers(DFTSkLearnTransformer(StandardScaler(), columnsUsed))
