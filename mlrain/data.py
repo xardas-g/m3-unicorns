@@ -36,7 +36,8 @@ COL_DATE = "Date"
 COL_LOCATION = "Location"
 COL_LONG = "Longitude"
 COL_LAT = "Latitude"
-COLS_FULL_LOCATION = [COL_LOCATION, COL_LAT, COL_LONG]
+COL_ALTITUDE = "Altitude"
+COLS_FULL_LOCATION = [COL_LOCATION, COL_LAT, COL_LONG, COL_ALTITUDE]
 
 COL_GEN_RAINDAYSPERYEAR = "RaindaysPerYear"
 
@@ -164,6 +165,61 @@ class Dataset:
         # Aktualisiere die lat und lng Spalten mit den entsprechenden Werten
         df_transformed[COL_LAT] = df_transformed['Breitengrad']
         df_transformed[COL_LONG] = df_transformed['Längengrad']
+
+        elevations = {
+            'Canberra': 581,
+            'Sydney': 3,
+            'Adelaide': 50,
+            'Darwin': 1,
+            'Hobart': 13,
+            'Perth': 2,
+            'Melbourne': 31,
+            'Brisbane': 1,
+            'Albury': 166,
+            'MountGinini': 1762,
+            'GoldCoast': 1,
+            'Wollongong': 1,
+            'MountGambier': 63,
+            'Launceston': 174,
+            'AliceSprings': 545,
+            'Albany': 20,
+            'Townsville': 1,
+            'Bendigo': 225,
+            'Cairns': 1,
+            'Ballarat': 435,
+            'Penrith': 25,
+            'Newcastle': 1,
+            'Tuggeranong': 597,
+            'PerthAirport': 20,
+            'Williamtown': 1,
+            'Cobar': 257,
+            'BadgerysCreek': 48,
+            'SydneyAirport': 6,
+            'Richmond': 19,
+            'Moree': 212,
+            'CoffsHarbour': 12,
+            'NorfolkIsland': 111,
+            'WaggaWagga': 147,
+            'Witchcliffe': 112,
+            'Watsonia': 108,
+            'Dartmoor': 26,
+            'Portland': 63,
+            'Sale': 7,
+            'MelbourneAirport': 132,
+            'Mildura': 50,
+            'Nuriootpa': 275,
+            'Woomera': 166,
+            'PearceRAAF': 58,
+            'Walpole': 39,
+            'NorahHead': 18,
+            'SalmonGums': 238,
+            'Nhil': 132,
+            'Katherine': 108,
+            'Uluru': 863
+        }
+
+        # add new column 'abovesealevel' based on location
+        df_transformed[COL_ALTITUDE] = df_transformed[COL_LOCATION].map(elevations)
 
         # Entferne unnötige Spalten
         logger.info(f"Drop columns: {COL_LOCATION}")

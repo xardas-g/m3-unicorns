@@ -56,7 +56,7 @@ def run_ml_experiment():
 
 
 
-    logger.info(f"Result: \n {pd.DataFrame(model_result, columns=["F1-Score", "Model"]).sort_index()}")
+    logger.info(f"Result: \n {pd.DataFrame(model_result, columns=["F1-Score", "Model"])}")
 
 
 if __name__ == "__main__":
