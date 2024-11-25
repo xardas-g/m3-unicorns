@@ -77,6 +77,21 @@ class ModelFactory:
             .with_feature_transformers(DFTSkLearnTransformer(StandardScaler())) \
             .with_name("RandomForest-orig-est=100")
 
+    @classmethod
+    def create_random_forest(cls):
+        fc = FeatureCollector(*cls.DEFAULT_FEATURES, registry=registry)
+        return SkLearnRandomForestVectorClassificationModel(n_estimators=100) \
+            .with_feature_collector(fc) \
+            .with_feature_transformers(fc.create_feature_transformer_one_hot_encoder()) \
+            .with_name(f"RandomForest")
+    
+    @classmethod
+    def create_random_forest_with_hot_encoder(cls, columnsUsed):
+        return SkLearnRandomForestVectorClassificationModel(n_estimators=100) \
+            .with_feature_generator(FeatureGeneratorTakeColumns([*columnsUsed, COL_LOCATION])) \
+            .with_feature_transformers(DFTSkLearnTransformer(StandardScaler(), columnsUsed)) \
+            .with_feature_transformers(DFTOneHotEncoder(COL_LOCATION), add=True)\
+            .with_name("RandomForest-orig-with-hotencode-location")
 
     @classmethod
     def create_xgb_gradient_with_hotencode_location(cls, columnsUsed:list):
@@ -92,7 +107,9 @@ class ModelFactory:
                 .with_feature_generator(FeatureGeneratorTakeColumns([*columnsUsed])) \
                 .with_feature_transformers(DFTSkLearnTransformer(StandardScaler(), columnsUsed))
                 # .with_feature_transformers(DFTOneHotEncoder(COL_LOCATION), add=True) \
-                .with_name("XGBGradientBoostedVector-hotencode-location"))    @classmethod
+                .with_name("XGBGradientBoostedVector-hotencode-location"))
+        
+    @classmethod
     def create_xgb(cls, name_suffix="", features: Sequence[FeatureName] = DEFAULT_FEATURES, add_features: Sequence[FeatureName] = (),
             min_child_weight: Optional[float] = None, **kwargs):
         fc = FeatureCollector(*features, *add_features, registry=registry)

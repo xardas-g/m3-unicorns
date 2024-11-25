@@ -35,6 +35,8 @@ def run_ml_experiment():
         ModelFactory.create_knn_orig(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),
         ModelFactory.create_random_forest_orig(ModelFactory.COLS_REDUCED),
         ModelFactory.create_random_forest_orig(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),
+        ModelFactory.create_random_forest(),
+        ModelFactory.create_random_forest_with_hot_encoder(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),
         ModelFactory.create_decision_tree_orig(ModelFactory.COLS_REDUCED),
         ModelFactory.create_decision_tree_orig(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),
         ModelFactory.create_xgb_gradient_with_hotencode_location(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),
@@ -57,7 +59,7 @@ def run_ml_experiment():
 
 
 
-    logger.info(f"Result: \n {pd.DataFrame(model_result, columns=["F1-Score", "Model"])}")
+    logger.info(f"Result: \n {pd.DataFrame(model_result, columns=['F1-Score', 'Model'])}")
 
 
 if __name__ == "__main__":
