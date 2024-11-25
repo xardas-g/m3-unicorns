@@ -37,6 +37,7 @@ class FeatureGeneratorMeanRainDays(FeatureGenerator):
         c.name = "cnt"
         m = s / c
         m.name = "mean"
+        print("Mean", m)
         self._y = df[[self.col_target]]
         self._values = pd.concat([s, c, m], axis=1)
 
@@ -68,7 +69,7 @@ class FeatureGeneratorMeanRainDays(FeatureGenerator):
 
             values = df[COL_LOCATION].apply(val_i)
 
-        return pd.DataFrame({"mean_artist_popularity": values}, index=df.index)
+        return pd.DataFrame({"mean-rain-days": values}, index=df.index)
 
 
 registry = FeatureGeneratorRegistry()

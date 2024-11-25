@@ -7,9 +7,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from sensai.data_transformation import DFTSkLearnTransformer, DFTOneHotEncoder
-from sensai.featuregen import FeatureGeneratorTakeColumns
+from sensai.featuregen import FeatureGeneratorTakeColumns, FeatureCollector
 from sensai.sklearn.sklearn_classification import SkLearnLogisticRegressionVectorClassificationModel, \
     SkLearnKNeighborsVectorClassificationModel, SkLearnRandomForestVectorClassificationModel, SkLearnDecisionTreeVectorClassificationModel
+
+from typing import Sequence
 
 from .data import *
 from .features import FeatureName, registry
@@ -84,3 +86,11 @@ class ModelFactory:
             .with_feature_transformers(DFTOneHotEncoder(COL_LOCATION), add=True)\
             .with_name("XGBGradientBoostedVector-hotencode-location"))
 
+    @classmethod
+    def create_xgb(cls, name_suffix="", features: Sequence[FeatureName] = DEFAULT_FEATURES, add_features: Sequence[FeatureName] = (),
+            min_child_weight: Optional[float] = None, **kwargs):
+        fc = FeatureCollector(*features, *add_features, registry=registry)
+        return XGBGradientBoostedVectorClassificationModel(min_child_weight=min_child_weight, **kwargs) \
+            .with_feature_collector(fc) \
+            .with_feature_transformers(fc.create_feature_transformer_one_hot_encoder()) \
+            .with_name(f"XGBoost{name_suffix}")

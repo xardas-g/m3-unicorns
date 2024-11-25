@@ -33,6 +33,7 @@ def run_ml_experiment():
         ModelFactory.create_decision_tree_orig(ModelFactory.COLS_REDUCED),
         ModelFactory.create_decision_tree_orig(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),
         ModelFactory.create_xgb_gradient_with_hotencode_location(ModelFactory.COLS_USED_BY_ORIGINAL_MODELS),
+        ModelFactory.create_xgb()
     ]
 
     model_result = []
