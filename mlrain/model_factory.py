@@ -87,6 +87,12 @@ class ModelFactory:
             .with_name("XGBGradientBoostedVector-hotencode-location"))
 
     @classmethod
+    def create_xgb_gradient_no_hotencode_location(cls, columnsUsed: list):
+        return (XGBGradientBoostedVectorClassificationModel() \
+                .with_feature_generator(FeatureGeneratorTakeColumns([*columnsUsed])) \
+                .with_feature_transformers(DFTSkLearnTransformer(StandardScaler(), columnsUsed))
+                # .with_feature_transformers(DFTOneHotEncoder(COL_LOCATION), add=True) \
+                .with_name("XGBGradientBoostedVector-hotencode-location"))    @classmethod
     def create_xgb(cls, name_suffix="", features: Sequence[FeatureName] = DEFAULT_FEATURES, add_features: Sequence[FeatureName] = (),
             min_child_weight: Optional[float] = None, **kwargs):
         fc = FeatureCollector(*features, *add_features, registry=registry)
